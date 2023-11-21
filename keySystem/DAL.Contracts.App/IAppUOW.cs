@@ -9,4 +9,5 @@ public interface IAppUOW : IBaseUOW
    ISiteRepository SiteRepository { get; }
    IWorkerAtSiteRepository WorkerAtSiteRepository { get; }
    IWorkerRepository WorkerRepository { get; }
+   IKeyAtSiteRepository KeyAtSiteRepository { get; }
 }

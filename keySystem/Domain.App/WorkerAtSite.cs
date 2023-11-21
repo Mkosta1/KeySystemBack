@@ -14,9 +14,9 @@ public class WorkerAtSite : DomainEntityId
     public Guid SiteId { get; set; }
     public Domain.App.Site? Site { get; set; }
     
-    public Guid WorkerId { get; set; }
+    public Guid? WorkerId { get; set; }
     public Domain.App.Worker? Worker { get; set; }
     
     public Guid AppUserId { get; set; }
-    public AppUser? AppUser { get; set; } = default!;
+    public AppUser AppUser { get; set; } = default!;
 }

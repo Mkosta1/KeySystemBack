@@ -1,9 +1,15 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using AutoMapper;
 using Contracts.Base;
+using DAL.Base;
 using DAL.Contracts.App;
+using DAL.DTO;
+using Domain.App.Identity;
 using Helpers.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Public.DTO.Mappers;
 
@@ -16,24 +22,41 @@ public class WorkerAtSiteController : ControllerBase
 {
     private readonly IAppUOW _uow;
     private readonly WorkerAtSiteMapper _mapper;
+    private readonly UserManager<AppUser> _userManager;
 
-    public WorkerAtSiteController(IAppUOW uow, IMapper automapper)
+    public WorkerAtSiteController(IAppUOW uow, IMapper automapper, UserManager<AppUser> userManager)
     {
+        
         _uow = uow;
+        _userManager = userManager;
         _mapper = new WorkerAtSiteMapper(automapper);
     }
-
-    // GET: api/WorkerAtSite
+    
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Public.DTO.v1.WorkerAtSite>>> GetWorkerAtSite()
     {
         var data = await _uow.WorkerAtSiteRepository.AllAsync();
         var res = data
+            .Where(o => o.Until == null)
             .Select(e => _mapper.Map(e)!).ToList();
+        
+        return res;
+    }
+    
+    [HttpGet("history")]
+    public async Task<ActionResult<IEnumerable<Public.DTO.v1.WorkerAtSite>>> GetWorkerAtSiteAll()
+    {
+        var data = await _uow.WorkerAtSiteRepository.AllAsync();
+        var res = data
+            .Where(o => o.Until != null)
+            .Select(e => _mapper.Map(e)!).ToList();
+        
         return res;
     }
 
     // GET: api/WorkerAtSite/5
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<Public.DTO.v1.WorkerAtSite>> GetWorkerAtSite(Guid id)
     {
@@ -73,6 +96,7 @@ public class WorkerAtSiteController : ControllerBase
     public async Task<ActionResult<Public.DTO.v1.WorkerAtSite>> PostWorkerAtSite(Public.DTO.v1.WorkerAtSite job)
     {
         var existingJob = await _uow.WorkerAtSiteRepository.AllAsync();
+        
         foreach (var value in existingJob)
         {
             if (value.SiteId == job.SiteId && value.Until == null)

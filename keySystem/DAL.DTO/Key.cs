@@ -16,5 +16,5 @@ public class Key
     public string KeyNumber { get; set; } = default!;
 
     
-    public ICollection<Site>? Site { get; set; }
+    public ICollection<KeyAtSite>? KeyAtSite { get; set; }
 }

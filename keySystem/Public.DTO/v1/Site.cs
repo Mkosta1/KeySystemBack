@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WorkerAtSite = Public.DTO.v1.WorkerAtSite;
 
 namespace Public.DTO.v1;
 
@@ -18,7 +17,7 @@ public class Site
     
     public string Owner { get; set; } = default!;
     
-    public Guid KeyId { get; set; }
+    
     
 
 }

@@ -12,11 +12,12 @@ public class WorkerAtSiteRepository :
     public WorkerAtSiteRepository(ApplicationDbContext dataContext) : base(dataContext)
     {
     }
-
+    
     public override async Task<IEnumerable<WorkerAtSite>> AllAsync()
     {
         return await RepositoryDbSet
-            .OrderBy(e => e.Site)
+            .Include(o => o.Site)
+            .Include(o => o.Worker)
             .ToListAsync();
     }
 

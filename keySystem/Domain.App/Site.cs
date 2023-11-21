@@ -18,8 +18,7 @@ public class Site : DomainEntityId
     
     public string Owner { get; set; } = default!;
     
-    public Guid KeyId { get; set; }
-    public Domain.App.Key? Key { get; set; }
+    public ICollection<KeyAtSite>? KeyAtSite { get; set; }
     
     public ICollection<WorkerAtSite>? WorkerAtSite { get; set; }
 

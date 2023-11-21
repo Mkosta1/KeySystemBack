@@ -1,4 +1,5 @@
-﻿using DAL.Contracts.App;
+﻿using System.Security.AccessControl;
+using DAL.Contracts.App;
 using DAL.EF.Base;
 using Domain;
 using Domain.App;
@@ -30,7 +31,6 @@ public class WorkerRepository :
     public override async Task<Worker?> FindAsync(Guid id)
     {
         return await RepositoryDbSet
-            .OrderBy(t => t.Id)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
@@ -43,6 +43,11 @@ public class WorkerRepository :
     public async Task<Worker?> RemoveAsync(Guid id, Guid userId)
     {
         var part = await FindAsync(id, userId);
-        return part == null ? null : Remove(part);
+
+        bool hasRelated = RepositoryDbSet
+            .Any(worker => worker.Id == id && !worker.WorkerAtSite.Any(site => site.Until == null));
+        
+        return part == null || hasRelated == false ? null : Remove(part);
+        
     }
 }

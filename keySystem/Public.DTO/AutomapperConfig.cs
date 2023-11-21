@@ -12,6 +12,8 @@ public class AutomapperConfig : Profile
         CreateMap<Domain.App.WorkerAtSite, Public.DTO.v1.WorkerAtSite>().ReverseMap();
         
         CreateMap<Domain.App.Worker, Public.DTO.v1.Worker>().ReverseMap();
+
+        CreateMap<Domain.App.KeyAtSite, Public.DTO.v1.KeyAtSite>().ReverseMap();
         
     }
 }

@@ -30,4 +30,9 @@ public class AppUOW : EFBaseUOW<ApplicationDbContext>, IAppUOW
     public IWorkerAtSiteRepository WorkerAtSiteRepository =>
         _workerAtSiteRepository ??= new WorkerAtSiteRepository(UowDbContext);
     
+    private IKeyAtSiteRepository? _keyAtSiteRepository;
+
+    public IKeyAtSiteRepository KeyAtSiteRepository =>
+        _keyAtSiteRepository ??= new KeyAtSiteRepository(UowDbContext);
+    
 }

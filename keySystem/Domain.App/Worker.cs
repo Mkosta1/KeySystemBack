@@ -11,6 +11,6 @@ public class Worker : DomainEntityId
     public string Company { get; set; } = default!;
     
     public int Phone { get; set; }
-
+    
     public ICollection<WorkerAtSite>? WorkerAtSite { get; set; }
 }

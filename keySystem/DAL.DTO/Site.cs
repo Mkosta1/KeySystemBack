@@ -17,7 +17,6 @@ public class Site
     
     public string Owner { get; set; } = default!;
     
-    public Guid KeyId { get; set; }
-
+    public ICollection<KeyAtSite>? KeyAtSite { get; set; }
 
 }

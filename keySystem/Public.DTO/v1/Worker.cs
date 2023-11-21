@@ -1,5 +1,4 @@
-﻿using WorkerAtSite = Public.DTO.v1.WorkerAtSite;
-
+﻿
 namespace Public.DTO.v1;
 
 public class Worker
@@ -10,6 +9,6 @@ public class Worker
     
     public string Company { get; set; } = default!;
     
-    public int Phone { get; set; }
+    public int Phone { get; set; } = default!;
     
 }

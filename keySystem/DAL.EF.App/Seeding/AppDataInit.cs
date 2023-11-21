@@ -48,6 +48,7 @@ public static class AppDataInit
     {
         SeedAppDataKey(context);
         SeedAppDataSite(context);
+        SeedAppDataKeyAtSite(context);
         SeedAppDataWorker(context);
         SeedAppDataWorkerAtSite(context);
     
@@ -57,15 +58,24 @@ public static class AppDataInit
     private static void SeedAppDataKey(ApplicationDbContext context)
     {
         if (context.Key.Any()) return;
-    
+
+        context.Key.Add(new Key()
+        {
+            Id = adminId,
+            Name = "Lombaku",
+            Copies = 2,
+            NeededCopies = 2,
+            KeyNumber = "A60"
+
+        }
+        );
         context.Key.Add(new Key()
             {
-                Id = adminId,
-                Name = "Lombaku",
-                Copies = 2,
+                Id = Guid.Parse("e0069123-1fe7-435b-837e-4ea2cb4e9c63"),
+                Name = "Hall kiip",
+                Copies = 1,
                 NeededCopies = 2,
-                KeyNumber = "A60",
-                
+                KeyNumber = "B10"
             }
         );
     }
@@ -82,9 +92,27 @@ public static class AppDataInit
                 Name = "test",
                 Address = "ojiqret",
                 Region = "Harjumaa",
-                Owner = "Tele2",
-                KeyId = adminId
+                Owner = "Tele2"
+            }
+        );
+    }
+    
+    private static void SeedAppDataKeyAtSite(ApplicationDbContext context)
+    {
+        if (context.KeyAtSite.Any()) return;
 
+        context.KeyAtSite.Add(new KeyAtSite()
+            {
+                Id = Guid.Parse("e0069111-1fe7-435b-837e-4ea2cb4e9c63"),
+                SiteId = Guid.Parse("e0069111-1fe7-435b-837e-4ea2cb4e9c63"),
+                KeyId = adminId
+            }
+        );
+        context.KeyAtSite.Add(new KeyAtSite()
+            {
+                Id = Guid.Parse("e0069157-1fe7-435b-837e-4ea2cb4e9c63"),
+                SiteId = Guid.Parse("e0069111-1fe7-435b-837e-4ea2cb4e9c63"),
+                KeyId = Guid.Parse("e0069123-1fe7-435b-837e-4ea2cb4e9c63")
             }
         );
     }

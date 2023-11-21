@@ -16,8 +16,7 @@ public class SiteRepository :
     public override async Task<IEnumerable<Site>> AllAsync()
     {
         return await RepositoryDbSet
-            .Include(e => e.Key)
-            .OrderBy(e => e.Name)
+            .Include(e => e.KeyAtSite)
             .ToListAsync();
     }
 

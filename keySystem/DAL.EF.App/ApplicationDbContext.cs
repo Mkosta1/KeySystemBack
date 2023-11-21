@@ -12,7 +12,9 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Site> Site { get; set; } = default!;
     public DbSet<Worker> Worker { get; set; } = default!;
     public DbSet<WorkerAtSite> WorkerAtSite { get; set; } = default!;
-
+    
+    public DbSet<KeyAtSite> KeyAtSite { get; set; } = default!;
+    
     public DbSet<AppRefreshToken> AppRefreshTokens { get; set; } = default!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
