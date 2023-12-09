@@ -26,7 +26,7 @@ public class KeyAtSiteController : ControllerBase
     }
 
     // GET: api/KeyAtSiteAtSite
-    [HttpGet]
+    [Route("Check")]
     public async Task<ActionResult<IEnumerable<Public.DTO.v1.KeyAtSite>>> GetKeyAtSite()
     {
         var data = await _uow.KeyAtSiteRepository.AllAsync();
@@ -34,6 +34,17 @@ public class KeyAtSiteController : ControllerBase
             .Select(e => _mapper.Map(e)!).ToList();
         return res;
     }
+    
+    
+    [Route("NoCheck")]
+    public async Task<ActionResult<IEnumerable<Public.DTO.v1.KeyAtSite>>> GetKeyAtSiteWithNoChecks()
+    {
+        var data = await _uow.KeyAtSiteRepository.AllNoCheckAsync();
+        var res = data
+            .Select(e => _mapper.Map(e)!).ToList();
+        return res;
+    }
+    
 
     // GET: api/KeyAtSite/5
     [HttpGet("{id}")]
@@ -45,9 +56,9 @@ public class KeyAtSiteController : ControllerBase
         {
             return NotFound();
         }
-
+    
         var res = _mapper.Map(job)!;
-
+    
         return res;
     }
 

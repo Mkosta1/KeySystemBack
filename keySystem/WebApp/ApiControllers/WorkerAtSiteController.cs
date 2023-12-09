@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Transactions;
 using AutoMapper;
 using Contracts.Base;
 using DAL.Base;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Public.DTO.Mappers;
 
 namespace WebApp.ApiControllers;
@@ -22,13 +24,11 @@ public class WorkerAtSiteController : ControllerBase
 {
     private readonly IAppUOW _uow;
     private readonly WorkerAtSiteMapper _mapper;
-    private readonly UserManager<AppUser> _userManager;
 
-    public WorkerAtSiteController(IAppUOW uow, IMapper automapper, UserManager<AppUser> userManager)
+    public WorkerAtSiteController(IAppUOW uow, IMapper automapper)
     {
         
         _uow = uow;
-        _userManager = userManager;
         _mapper = new WorkerAtSiteMapper(automapper);
     }
     
@@ -81,38 +81,83 @@ public class WorkerAtSiteController : ControllerBase
         {
             return BadRequest();
         }
-        var uowJob = _mapper.Map(job);
         
-        _uow.WorkerAtSiteRepository.Update(uowJob!);
+        var uow = _mapper.Map(job);
+        
+        var keyAtSite = await _uow.KeyAtSiteRepository.AllAsync(User.GetUserId());
+
+        foreach (var item in keyAtSite)
+        {
+            if (item.SiteId == uow!.SiteId)
+            {
+                var key = await _uow.KeyRepository.FindAsync(item.KeyId);
+                key!.Copies++;
+            }
+        }
+        
+        _uow.WorkerAtSiteRepository.Update(uow!);
         
         await _uow.SaveChangesAsync();
         
         return NoContent();
     }
 
-    // POST: api/Jobs
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
-    public async Task<ActionResult<Public.DTO.v1.WorkerAtSite>> PostWorkerAtSite(Public.DTO.v1.WorkerAtSite job)
+    
+[HttpPost]
+public async Task<ActionResult<Public.DTO.v1.WorkerAtSite>> PostWorkerAtSite(Public.DTO.v1.WorkerAtSite job)
+{
+    var existingJob = await _uow.WorkerAtSiteRepository.AllAsync();
+
+    var uow = _mapper.Map(job);
+
+    // Gets all keys and sites from KeyAtSite table
+    var keyAtSite = await _uow.KeyAtSiteRepository.AllAsync(User.GetUserId());
+    
+    try
     {
-        var existingJob = await _uow.WorkerAtSiteRepository.AllAsync();
-        
-        foreach (var value in existingJob)
+        foreach (var item in keyAtSite)
         {
-            if (value.SiteId == job.SiteId && value.Until == null)
+            // Checks where the current post siteId matches with KeyAtSite binding table
+            if (item.SiteId == uow!.SiteId)
             {
-                return Conflict("Already written out!");
+                // Checks if there are enough copies for the current key
+                var key = await _uow.KeyRepository.FindAsync(item.KeyId);
+                if (key?.Copies != 0)
+                {
+                    key!.Copies--;
+                }
+                else
+                {
+                    return BadRequest("Failed to add worker at site.");
+                    
+                }
             }
         }
-        
+
+        // Apply changes to the database
         var uowJob = _mapper.Map(job);
-        
         _uow.WorkerAtSiteRepository.Add(uowJob!);
-        
+
         await _uow.SaveChangesAsync();
-        
+
         return CreatedAtAction("GetWorkerAtSite", new { id = job.Id }, job);
     }
+    catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "40001")
+    {
+        // Retry the transaction in case of a transient failure
+        return await PostWorkerAtSite(job);
+    }
+    catch (Exception)
+    {
+        // The transaction will be rolled back automatically if an exception occurs
+        return BadRequest("Failed to add worker at site.");
+    }
+    
+}
+
+
+
+
 
     // DELETE: api/Jobs/5
     [HttpDelete("{id}")]

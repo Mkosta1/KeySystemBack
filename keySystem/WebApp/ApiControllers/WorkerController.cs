@@ -62,11 +62,11 @@ public class WorkerController : ControllerBase
         {
             return BadRequest();
         }
-        
-
         var uowJob = _mapper.Map(job);
+       
         _uow.WorkerRepository.Update(uowJob!);
-
+        await _uow.SaveChangesAsync();
+        
         return NoContent();
     }
     

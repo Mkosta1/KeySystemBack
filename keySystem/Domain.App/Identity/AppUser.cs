@@ -14,5 +14,4 @@ public class AppUser : IdentityUser<Guid>, IDomainEntityId
     
     public ICollection<AppRefreshToken>? AppRefreshTokens { get; set; }
     
-    public ICollection<WorkerAtSite>? WorkerAtSite { get; set; }
 }

@@ -18,6 +18,8 @@ public class WorkerAtSiteRepository :
         return await RepositoryDbSet
             .Include(o => o.Site)
             .Include(o => o.Worker)
+            .Include(o => o.AppUser)
+            .Where(o => o.AppUser.Id == o.AppUserId)
             .ToListAsync();
     }
 

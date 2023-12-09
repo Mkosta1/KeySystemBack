@@ -33,6 +33,11 @@ public class EFBaseRepository<TEntity, TKey, TDbContext> : IBaseRepository<TEnti
     {
         return await RepositoryDbSet.ToListAsync();
     }
+    
+    public virtual async Task<IEnumerable<TEntity>> AllNoCheckAsync()
+    {
+        return await RepositoryDbSet.ToListAsync();
+    }
 
     public virtual async Task<TEntity?> FindAsync(TKey id)
     {

@@ -13,6 +13,8 @@ public interface IBaseRepository<TEntity, in TKey>
 {
     // IEnumerable<TEntity> All();
     Task<IEnumerable<TEntity>> AllAsync();
+    
+    Task<IEnumerable<TEntity>> AllNoCheckAsync();
 
     // TEntity Find(TKey id);
     Task<TEntity?> FindAsync(TKey id);
