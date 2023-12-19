@@ -64,7 +64,7 @@ public static class AppDataInit
             Id = adminId,
             Name = "Lombaku",
             Copies = 2,
-            NeededCopies = 2,
+            NeededCopies = 3,
             KeyNumber = "A60"
 
         }

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.EF.App.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class DeleteNull : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,6 +69,22 @@ namespace DAL.EF.App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Site",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SiteId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    Region = table.Column<string>(type: "text", nullable: false),
+                    Owner = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Site", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Worker",
                 columns: table => new
                 {
@@ -100,7 +116,7 @@ namespace DAL.EF.App.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,7 +138,7 @@ namespace DAL.EF.App.Migrations
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,7 +159,7 @@ namespace DAL.EF.App.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,7 +179,7 @@ namespace DAL.EF.App.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,13 +197,13 @@ namespace DAL.EF.App.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,30 +223,32 @@ namespace DAL.EF.App.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Site",
+                name: "KeyAtSite",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SiteId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    Region = table.Column<string>(type: "text", nullable: false),
-                    Owner = table.Column<string>(type: "text", nullable: false),
-                    KeyId = table.Column<Guid>(type: "uuid", nullable: false)
+                    KeyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SiteId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Site", x => x.Id);
+                    table.PrimaryKey("PK_KeyAtSite", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Site_Key_KeyId",
+                        name: "FK_KeyAtSite_Key_KeyId",
                         column: x => x.KeyId,
                         principalTable: "Key",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_KeyAtSite_Site_SiteId",
+                        column: x => x.SiteId,
+                        principalTable: "Site",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -241,7 +259,7 @@ namespace DAL.EF.App.Migrations
                     When = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Until = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     SiteId = table.Column<Guid>(type: "uuid", nullable: false),
-                    WorkerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    WorkerId = table.Column<Guid>(type: "uuid", nullable: true),
                     AppUserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -252,19 +270,19 @@ namespace DAL.EF.App.Migrations
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_WorkerAtSite_Site_SiteId",
                         column: x => x.SiteId,
                         principalTable: "Site",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_WorkerAtSite_Worker_WorkerId",
                         column: x => x.WorkerId,
                         principalTable: "Worker",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -310,9 +328,14 @@ namespace DAL.EF.App.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Site_KeyId",
-                table: "Site",
+                name: "IX_KeyAtSite_KeyId",
+                table: "KeyAtSite",
                 column: "KeyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KeyAtSite_SiteId",
+                table: "KeyAtSite",
+                column: "SiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkerAtSite_AppUserId",
@@ -352,10 +375,16 @@ namespace DAL.EF.App.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "KeyAtSite");
+
+            migrationBuilder.DropTable(
                 name: "WorkerAtSite");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Key");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -365,9 +394,6 @@ namespace DAL.EF.App.Migrations
 
             migrationBuilder.DropTable(
                 name: "Worker");
-
-            migrationBuilder.DropTable(
-                name: "Key");
         }
     }
 }

@@ -26,12 +26,13 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         // let the initial stuff run
         base.OnModelCreating(builder);
-
-        // disable cascade delete
+    
+        // set value null to what foreign key it has
         foreach (var foreignKey in builder.Model
                      .GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
         {
-            foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            foreignKey.DeleteBehavior = DeleteBehavior.SetNull;
         }
+        
     }
 }

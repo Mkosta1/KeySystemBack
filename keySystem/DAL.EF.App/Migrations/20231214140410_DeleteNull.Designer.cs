@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.EF.App.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231109211906_V2")]
-    partial class V2
+    [Migration("20231214140410_DeleteNull")]
+    partial class DeleteNull
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,7 +193,7 @@ namespace DAL.EF.App.Migrations
                     b.Property<Guid>("KeyId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SiteId")
+                    b.Property<Guid?>("SiteId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -277,7 +277,7 @@ namespace DAL.EF.App.Migrations
                     b.Property<DateTime?>("When")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("WorkerId")
+                    b.Property<Guid?>("WorkerId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -399,7 +399,7 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppUser", "AppUser")
                         .WithMany("AppRefreshTokens")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -410,14 +410,13 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Key", "Key")
                         .WithMany("KeyAtSite")
                         .HasForeignKey("KeyId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("Domain.App.Site", "Site")
                         .WithMany("KeyAtSite")
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Key");
 
@@ -427,22 +426,21 @@ namespace DAL.EF.App.Migrations
             modelBuilder.Entity("Domain.App.WorkerAtSite", b =>
                 {
                     b.HasOne("Domain.App.Identity.AppUser", "AppUser")
-                        .WithMany("WorkerAtSite")
+                        .WithMany()
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("Domain.App.Site", "Site")
                         .WithMany("WorkerAtSite")
                         .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("Domain.App.Worker", "Worker")
                         .WithMany("WorkerAtSite")
                         .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AppUser");
 
@@ -456,7 +454,7 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
                 });
 
@@ -465,7 +463,7 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
                 });
 
@@ -474,7 +472,7 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
                 });
 
@@ -483,13 +481,13 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("Domain.App.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
                 });
 
@@ -498,15 +496,13 @@ namespace DAL.EF.App.Migrations
                     b.HasOne("Domain.App.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.App.Identity.AppUser", b =>
                 {
                     b.Navigation("AppRefreshTokens");
-
-                    b.Navigation("WorkerAtSite");
                 });
 
             modelBuilder.Entity("Domain.App.Key", b =>

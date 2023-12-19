@@ -1,9 +1,14 @@
 
 
-## Apple Watch Structured Training
+## Key system
+
+Run the application as http or https version. When running MVC controller page will open, it can be closed because frontend is using that localhost address.
+To add database to docker, run docker-compose.yml file. Access database, then add the connection to DBBeaver or other db management system.
+Want to add new rules to database then add them to ApplicationDbContext.cs.
 
 
 
+# Code below is to generator or update migration, create new API controllers whenever new table is added to db. When adding new tables, check if its added to mapping, DAL layer and has its repository.
 # Generate db migration
 
 ~~~bash
@@ -33,11 +38,6 @@ dotnet tool install --global dotnet-aspnet-codegenerator
 dotnet tool update --global dotnet-aspnet-codegenerator
 
 cd WebApp
-# MVC
-dotnet aspnet-codegenerator controller -m Domain.App.Key -name KeyController -outDir Controllers -dc ApplicationDbContext  -udl --referenceScriptLibraries -f
-dotnet aspnet-codegenerator controller -m Domain.App.Site -name SiteController -outDir Controllers -dc ApplicationDbContext  -udl --referenceScriptLibraries -f
-dotnet aspnet-codegenerator controller -m Domain.App.Worker -name WorkerController -outDir Controllers -dc ApplicationDbContext  -udl --referenceScriptLibraries -f
-dotnet aspnet-codegenerator controller -m Domain.App.WorkerAtSite -name WorkerAtSiteController -outDir Controllers -dc ApplicationDbContext  -udl --referenceScriptLibraries -f
 
 # Rest API
 dotnet aspnet-codegenerator controller -m Domain.App.Key -name KeyController -outDir ApiControllers -api -dc ApplicationDbContext  -udl -f

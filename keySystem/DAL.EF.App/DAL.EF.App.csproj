@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Public.DTO\Public.DTO.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

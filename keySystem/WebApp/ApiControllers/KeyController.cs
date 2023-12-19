@@ -73,9 +73,10 @@ public class KeyController : ControllerBase
     {
         var uowJob = _mapper.Map(job);
         _uow.KeyRepository.Add(uowJob!);
+        
         await _uow.SaveChangesAsync();
 
-        return CreatedAtAction("GetKey", new { id = job.Id }, job);
+        return CreatedAtAction("GetKey", new { id = uowJob!.Id }, uowJob);
     }
 
     // DELETE: api/Jobs/5

@@ -47,6 +47,9 @@ Backup of *.doc*
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
+
+
+
 *.suo
 *.user
 .vs/

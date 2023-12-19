@@ -29,7 +29,7 @@ public class KeyAtSiteRepository :
             .GroupBy(kas => kas.Site)
             .Where(group =>
                     group.All(kas => kas.Key!.Copies > 0) &&  // Check if all keys have more than 0 copies
-                    group.All(kas => group.Count(g => g.Key!.Id == kas.Key!.Id && g.SiteId == kas.Site!.Id) == 1)  // Check if each key is assigned at most once
+                    group.All(kas => group.Count(g => g.Key!.Id == kas.Key!.Id && g.SiteId == kas.Site?.Id && kas.Site?.Id != null) == 1)  // Check if each key is assigned at most once
             )
             .Select(group =>
             {
@@ -50,21 +50,7 @@ public class KeyAtSiteRepository :
             .Include(o => o.Site)
             .ThenInclude(o => o!.WorkerAtSite)
             .ToListAsync();
-
-        //This code below checks if key doesnt have 0 copies
-        //Also checks if site has more than one key and when one of the key has Count 0, then the site doesnt appear in the all request at all
-        var groupedData = data
-            .GroupBy(kas => kas.Site)
-            .Select(group =>
-            {
-                //If site has multiple keys, then groups them and adds ", " between them
-                var firstKeyAtSite = group.First();
-                firstKeyAtSite.Key!.KeyNumber = string.Join(", ", group.Select(k => k.Key!.KeyNumber));
-                return firstKeyAtSite;
-            })
-            .ToList();
-
-        return groupedData;
+        return data;
     }
     
 

@@ -5,6 +5,7 @@ using Helpers.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Public.DTO.Mappers;
 using Key = Public.DTO.v1.Key;
 
@@ -72,10 +73,13 @@ public class KeyAtSiteController : ControllerBase
             return BadRequest();
         }
         
-
         var uowJob = _mapper.Map(job);
+        
+        
         _uow.KeyAtSiteRepository.Update(uowJob!);
-
+        
+        await _uow.SaveChangesAsync();
+        
         return NoContent();
     }
 
@@ -85,10 +89,17 @@ public class KeyAtSiteController : ControllerBase
     public async Task<ActionResult<Public.DTO.v1.KeyAtSite>> PostKeyAtSite(Public.DTO.v1.KeyAtSite job)
     {
         var uowJob = _mapper.Map(job);
-        _uow.KeyAtSiteRepository.Add(uowJob!);
-        await _uow.SaveChangesAsync();
+        if (uowJob!.SiteId == Guid.Empty)
+        {
+            uowJob.SiteId = null;
+            _uow.KeyAtSiteRepository.Add(uowJob!);
+        }else {
+            _uow.KeyAtSiteRepository.Add(uowJob!);
 
+        }
+        await _uow.SaveChangesAsync();
         return CreatedAtAction("GetKeyAtSite", new { id = job.Id }, job);
+        
     }
 
     // DELETE: api/Jobs/5
